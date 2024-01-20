@@ -1,0 +1,11 @@
+<script>
+  defineMetadata({
+    selector: "app-home",
+  });
+</script>
+
+<template>
+  <h2>Analog WebRTC Samples</h2>
+</template>
+
+<style></style>

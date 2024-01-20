@@ -8,5 +8,10 @@
     "types": ["node", "vitest/globals"]
   },
   "files": ["src/test.ts"],
-  "include": ["src/**/*.spec.ts", "src/**/*.ts", "src/app/app.component.ng"]
+  "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.ts",
+    "src/app/app.component.ng",
+    "src/app/pages/index.page.ng"
+  ]
 }
