@@ -1,13 +1,54 @@
 <script lang="ts">
+  import { signal, ChangeDetectorRef, inject } from "@angular/core";
+
   defineMetadata({
     selector: "app-basic-get-user-media",
   });
 
+  const cdr = inject(ChangeDetectorRef);
+
+  const stream = signal<MediaStream | undefined>(undefined);
+
+  async function onClick() {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+
+      const videoTracks = mediaStream.getVideoTracks();
+      console.log(videoTracks);
+
+      stream.set(mediaStream);
+      cdr.detectChanges();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   onDestroy(() => {
-    console.log('hello destroyed');
+    stream()
+      ?.getTracks()
+      .forEach((track) => {
+        track.stop();
+      });
   });
 </script>
 
 <template>
-  <div>Basic works</div>
+  <div class="flex flex-col items-center gap-3 pt-3">
+    <video
+      #video
+      class="block w-[640px] h-[480px] bg-black"
+      autoplay
+      playsinline
+      [srcObject]="stream()"
+    ></video>
+    <button
+      class="rounded-md bg-red-500 text-white px-4 py-1 shadow shadow-[rgba(0,0,0,0.3)]"
+      (click)="onClick()"
+    >
+      Open camera
+    </button>
+  </div>
 </template>
