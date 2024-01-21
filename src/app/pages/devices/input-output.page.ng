@@ -1,0 +1,9 @@
+<script lang="ts">
+  defineMetadata({
+    selector: "app-devices-input-output",
+  });
+</script>
+
+<template>
+  <div>Input output works</div>
+</template>

@@ -1,0 +1,13 @@
+<script lang="ts">
+  defineMetadata({
+    selector: "app-basic-get-user-media",
+  });
+
+  onDestroy(() => {
+    console.log('hello destroyed');
+  });
+</script>
+
+<template>
+  <div>Basic works</div>
+</template>

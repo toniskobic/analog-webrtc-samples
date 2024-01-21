@@ -4,3 +4,16 @@
 @tailwind utilities;
 
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  @apply h-lvh;
+}
+app-root {
+  @apply block;
+  @apply h-full;
+}
+
+.active-link {
+  @apply bg-red-500;
+  @apply text-white;
+}

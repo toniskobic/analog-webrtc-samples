@@ -1,13 +1,29 @@
 <script lang="ts">
-  import { RouterOutlet } from '@angular/router';
+  import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
 
   defineMetadata({
-    selector: 'app-root',
-    imports: [RouterOutlet],
-  })
-
+    selector: "app-root",
+    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  });
 </script>
 
 <template>
+  <h1 class="text-2xl font-semibold py-3">Analog WebRTC Samples</h1>
+  <ul class="flex flex-row justify-center border-y border-black">
+    <li
+      class="py-2 px-2 cursor-pointer"
+      routerLink="get-user-media"
+      routerLinkActive="active-link"
+    >
+      <a class="block">getUserMedia()</a>
+    </li>
+    <li
+      class="py-2 px-2 cursor-pointer"
+      routerLink="devices"
+      routerLinkActive="active-link"
+    >
+      <a class="block">Devices</a>
+    </li>
+  </ul>
   <router-outlet></router-outlet>
 </template>

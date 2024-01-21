@@ -1,0 +1,15 @@
+<script lang="ts">
+  import { RouterOutlet, RouterLink, RouterLinkActive, Routes } from "@angular/router";
+  import DashboardComponent from "../components/dashboard.component.ng";
+
+  defineMetadata({
+    selector: "app-get-user-media",
+    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  });
+
+  const routes: Routes = [{path: 'basic', title: 'Basic'}];
+</script>
+
+<template>
+  <app-dashboard [routes]="routes"></app-dashboard>
+</template>

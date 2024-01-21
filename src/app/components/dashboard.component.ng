@@ -1,0 +1,31 @@
+<script lang="ts">
+  import { input } from "@angular/core";
+  import {
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    Routes,
+  } from "@angular/router";
+
+  defineMetadata({
+    selector: "app-dashboard",
+    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  });
+
+  const routes = input<Routes>();
+</script>
+
+<template>
+  @for (route of routes(); track route) {
+  <ul class="flex flex-row justify-center border-b border-black">
+    <li
+      class="py-2 px-2 cursor-pointer"
+      [routerLink]="route.path"
+      routerLinkActive="active-link"
+    >
+      <a>{{ route.title }}</a>
+    </li>
+  </ul>
+  }
+  <router-outlet></router-outlet>
+</template>
