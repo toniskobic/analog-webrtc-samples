@@ -16,8 +16,8 @@
 </script>
 
 <template>
-  @for (route of routes(); track route) {
   <ul class="flex flex-row justify-center border-b border-black">
+    @for (route of routes(); track route) {
     <li
       class="py-2 px-2 cursor-pointer"
       [routerLink]="route.path"
@@ -25,7 +25,7 @@
     >
       <a>{{ route.title }}</a>
     </li>
+    }
   </ul>
-  }
   <router-outlet></router-outlet>
 </template>

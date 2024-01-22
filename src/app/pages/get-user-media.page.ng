@@ -7,7 +7,7 @@
     imports: [RouterOutlet, RouterLink, RouterLinkActive],
   });
 
-  const routes: Routes = [{path: 'basic', title: 'Basic'}];
+  const routes: Routes = [{path: 'basic', title: 'Basic', {path: 'canvas', title: 'Canvas'}}];
 </script>
 
 <template>

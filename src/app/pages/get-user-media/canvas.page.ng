@@ -1,0 +1,70 @@
+<script lang="ts">
+  import {
+    signal,
+    ChangeDetectorRef,
+    inject,
+    afterNextRender,
+    ViewChild,
+    ElementRef,
+  } from "@angular/core";
+
+  defineMetadata({
+    selector: "app-canvas-get-user-media",
+  });
+
+  const cdr = inject(ChangeDetectorRef);
+
+  const stream = signal<MediaStream | undefined>(undefined);
+
+  afterNextRender(async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+
+      stream.set(mediaStream);
+      cdr.detectChanges();
+    } catch (error: any) {
+      console.log(error.message, error.name);
+    }
+  });
+
+  function onClick() {
+    const video = document.querySelector("video");
+    const canvas = document.querySelector("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas
+      .getContext("2d")
+      ?.drawImage(video, 0, 0, canvas.width, canvas.height);
+  }
+
+  onDestroy(() => {
+    stream()
+      ?.getTracks()
+      .forEach((track) => {
+        track.stop();
+      });
+  });
+</script>
+
+<template>
+  <div class="flex flex-col items-center py-3">
+    <div class="flex flex-col items-start gap-3">
+      <video
+        class="block w-[640px] h-[480px] bg-black"
+        autoplay
+        playsinline
+        [srcObject]="stream()"
+      ></video>
+      <button
+        class="rounded-md bg-red-600 text-white px-6 py-2 shadow shadow-[rgba(0,0,0,0.3)]"
+        (click)="onClick()"
+      >
+        Take snapshot
+      </button>
+      <canvas class="block w-[640px] h-[480px] bg-gray-500"></canvas>
+    </div>
+  </div>
+</template>

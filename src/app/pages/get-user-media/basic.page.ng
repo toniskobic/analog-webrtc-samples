@@ -36,7 +36,8 @@
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-3 pt-3">
+  <div class="flex flex-col items-center py-3">
+    <div class="flex flex-col items-start gap-3">
     <video
       #video
       class="block w-[640px] h-[480px] bg-black"
@@ -45,10 +46,11 @@
       [srcObject]="stream()"
     ></video>
     <button
-      class="rounded-md bg-red-500 text-white px-4 py-1 shadow shadow-[rgba(0,0,0,0.3)]"
+      class="rounded-md bg-red-600 text-white px-6 py-2 shadow shadow-[rgba(0,0,0,0.3)]"
       (click)="onClick()"
     >
       Open camera
     </button>
+    </div>
   </div>
 </template>
