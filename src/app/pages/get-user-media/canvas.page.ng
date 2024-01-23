@@ -4,8 +4,6 @@
     ChangeDetectorRef,
     inject,
     afterNextRender,
-    ViewChild,
-    ElementRef,
   } from "@angular/core";
 
   defineMetadata({

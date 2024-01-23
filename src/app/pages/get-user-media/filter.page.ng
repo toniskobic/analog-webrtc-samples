@@ -1,0 +1,106 @@
+<script lang="ts">
+  import {
+    signal,
+    ChangeDetectorRef,
+    inject,
+    afterNextRender,
+  } from "@angular/core";
+  import { TitleCasePipe } from "@angular/common";
+
+  defineMetadata({
+    selector: "app-filter-get-user-media",
+    imports: [TitleCasePipe],
+  });
+
+  const cdr = inject(ChangeDetectorRef);
+
+  const stream = signal<MediaStream | undefined>(undefined);
+  const options = signal<{ value: string; class: string }[]>([
+    { value: "none", class: "" },
+    { value: "blur", class: "blur-sm" },
+    { value: "grayscale", class: "grayscale" },
+    { value: "invert", class: "invert" },
+    { value: "sepia", class: "sepia" },
+  ]);
+
+  const selectedOption = signal<{ value: string; class: string }>({
+    value: "none",
+    class: "",
+  });
+
+  onInit(async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+
+      stream.set(mediaStream);
+      cdr.detectChanges();
+    } catch (error: any) {
+      console.log(error.message, error.name);
+    }
+  });
+
+  function onClick() {
+    const video = document.querySelector("video");
+    const canvas = document.querySelector("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.className = selectedOption().class;
+    canvas
+      .getContext("2d")
+      ?.drawImage(video, 0, 0, canvas.width, canvas.height);
+  }
+
+  function onChange() {
+    const selectValue = document.querySelector("select")?.value;
+    selectedOption.set(
+      options().find((option) => option.value === selectValue)
+    );
+  }
+
+  onDestroy(() => {
+    stream()
+      ?.getTracks()
+      .forEach((track) => {
+        track.stop();
+      });
+  });
+</script>
+
+<template>
+  <div class="flex flex-col items-center py-3">
+    <div class="flex flex-col items-start gap-3">
+      <video
+        class="block w-[640px] h-[480px] bg-black {{ selectedOption().class }}"
+        autoplay
+        playsinline
+        [srcObject]="stream()"
+      ></video>
+      <div class="flex gap-5">
+        <div class="flex items-center gap-1">
+          <label for="filter">Filter:</label>
+          <select
+            id="filter"
+            (change)="onChange()"
+            class="border-2 rounded-md border-black py-1 cursor-pointer"
+          >
+            @for (option of options(); track options) {
+            <option value="{{ option.value }}">
+              {{ option.value | titlecase }}
+            </option>
+            }
+          </select>
+        </div>
+        <button
+          class="rounded-md bg-red-600 text-white px-6 py-2 shadow shadow-[rgba(0,0,0,0.3)]"
+          (click)="onClick()"
+        >
+          Take snapshot
+        </button>
+      </div>
+      <canvas class="block w-[640px] h-[480px] bg-gray-500"></canvas>
+    </div>
+  </div>
+</template>

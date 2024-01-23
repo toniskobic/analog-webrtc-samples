@@ -1,5 +1,10 @@
 <script lang="ts">
-  import { RouterOutlet, RouterLink, RouterLinkActive, Routes } from "@angular/router";
+  import {
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    Routes,
+  } from "@angular/router";
   import DashboardComponent from "../components/dashboard.component.ng";
 
   defineMetadata({
@@ -7,7 +12,11 @@
     imports: [RouterOutlet, RouterLink, RouterLinkActive],
   });
 
-  const routes: Routes = [{path: 'basic', title: 'Basic', {path: 'canvas', title: 'Canvas'}}];
+  const routes: Routes = [
+    { path: "basic", title: "Basic" },
+    { path: "canvas", title: "Canvas" },
+    { path: "filter", title: "Filter" },
+  ];
 </script>
 
 <template>
