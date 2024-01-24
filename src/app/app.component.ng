@@ -1,29 +1,19 @@
 <script lang="ts">
   import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
+  import DashboardComponent from "./components/dashboard.component.ng";
 
   defineMetadata({
     selector: "app-root",
     imports: [RouterOutlet, RouterLink, RouterLinkActive],
   });
+
+  const routes: Routes = [
+    { path: "get-user-media", title: "getUserMedia()" },
+    { path: "devices", title: "Devices" },
+  ];
 </script>
 
 <template>
   <h1 class="text-2xl font-semibold py-3">Analog WebRTC Samples</h1>
-  <ul class="flex flex-row justify-center border-y border-border py-2">
-    <li
-      class="py-2 px-4 cursor-pointer rounded-lg"
-      routerLink="get-user-media"
-      routerLinkActive="active-link"
-    >
-      <a class="block">getUserMedia()</a>
-    </li>
-    <li
-      class="py-2 px-4 cursor-pointer rounded-lg"
-      routerLink="devices"
-      routerLinkActive="active-link"
-    >
-      <a class="block">Devices</a>
-    </li>
-  </ul>
-  <router-outlet></router-outlet>
+  <app-dashboard [routes]="routes"></app-dashboard>
 </template>

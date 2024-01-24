@@ -1,0 +1,11 @@
+<script lang="ts">
+
+  defineMetadata({
+    selector: "app-resolution-get-user-media",
+  });
+
+</script>
+
+<template>
+  <div>resolution works!</div>
+</template>

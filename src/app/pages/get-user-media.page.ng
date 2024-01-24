@@ -16,9 +16,10 @@
     { path: "basic", title: "Basic" },
     { path: "canvas", title: "Canvas" },
     { path: "filter", title: "Filter" },
+    { path: "resolution", title: "Resolution" },
   ];
 </script>
 
 <template>
-  <app-dashboard [routes]="routes"></app-dashboard>
+  <app-dashboard [routes]="routes" [border]="{bottom: true}"></app-dashboard>
 </template>

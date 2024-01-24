@@ -11,5 +11,5 @@
 </script>
 
 <template>
-  <app-dashboard [routes]="routes"></app-dashboard>
+  <app-dashboard [routes]="routes" [border]="{bottom: true}"></app-dashboard>
 </template>

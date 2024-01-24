@@ -6,17 +6,38 @@
     RouterLinkActive,
     Routes,
   } from "@angular/router";
+  import { NgClass } from "@angular/common";
 
   defineMetadata({
     selector: "app-dashboard",
-    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, NgClass],
   });
 
   const routes = input<Routes>();
+
+  const border: {
+    top?: boolean;
+    bottom?: boolean;
+    left?: boolean;
+    right?: boolean;
+  } = input({
+    top: true,
+    bottom: true,
+    left: false,
+    right: false,
+  });
 </script>
 
 <template>
-  <ul class="flex flex-row justify-center border-b border-border py-2">
+  <ul
+    class="flex flex-row justify-center border-border py-2"
+    [ngClass]="{
+      'border-t': border().top,
+      'border-b': border().bottom,
+      'border-r': border().right,
+      'border-l': border().left
+    }"
+  >
     @for (route of routes(); track route) {
     <li
       class="py-2 px-4 cursor-pointer rounded-lg"
