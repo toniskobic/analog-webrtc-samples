@@ -16,10 +16,10 @@
 </script>
 
 <template>
-  <ul class="flex flex-row justify-center border-b border-black">
+  <ul class="flex flex-row justify-center border-b border-border py-2">
     @for (route of routes(); track route) {
     <li
-      class="py-2 px-2 cursor-pointer"
+      class="py-2 px-4 cursor-pointer rounded-lg"
       [routerLink]="route.path"
       routerLinkActive="active-link"
     >

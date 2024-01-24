@@ -1,8 +1,10 @@
 <script lang="ts">
   import { signal, ChangeDetectorRef, inject } from "@angular/core";
+  import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
 
   defineMetadata({
     selector: "app-basic-get-user-media",
+    imports: [HlmButtonDirective],
   });
 
   const cdr = inject(ChangeDetectorRef);
@@ -38,19 +40,14 @@
 <template>
   <div class="flex flex-col items-center py-3">
     <div class="flex flex-col items-start gap-3">
-    <video
-      #video
-      class="block w-[640px] h-[480px] bg-black"
-      autoplay
-      playsinline
-      [srcObject]="stream()"
-    ></video>
-    <button
-      class="rounded-md bg-red-600 text-white px-6 py-2 shadow shadow-[rgba(0,0,0,0.3)]"
-      (click)="onClick()"
-    >
-      Open camera
-    </button>
+      <video
+        #video
+        class="block w-[640px] h-[480px] bg-black rounded-3xl bg-secondary"
+        autoplay
+        playsinline
+        [srcObject]="stream()"
+      ></video>
+      <button hlmBtn (click)="onClick()">Open camera</button>
     </div>
   </div>
 </template>

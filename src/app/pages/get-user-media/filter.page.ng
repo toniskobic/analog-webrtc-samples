@@ -6,10 +6,11 @@
     afterNextRender,
   } from "@angular/core";
   import { TitleCasePipe } from "@angular/common";
+  import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
 
   defineMetadata({
     selector: "app-filter-get-user-media",
-    imports: [TitleCasePipe],
+    imports: [TitleCasePipe, HlmButtonDirective],
   });
 
   const cdr = inject(ChangeDetectorRef);
@@ -47,7 +48,7 @@
     const canvas = document.querySelector("canvas");
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    canvas.className = selectedOption().class;
+    canvas.className = `${selectedOption().class} rounded-3xl`;
     canvas
       .getContext("2d")
       ?.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -73,18 +74,20 @@
   <div class="flex flex-col items-center py-3">
     <div class="flex flex-col items-start gap-3">
       <video
-        class="block w-[640px] h-[480px] bg-black {{ selectedOption().class }}"
+        class="block w-[640px] h-[480px] rounded-3xl bg-secondary{{
+          selectedOption().class
+        }}"
         autoplay
         playsinline
         [srcObject]="stream()"
       ></video>
       <div class="flex gap-5">
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-2">
           <label for="filter">Filter:</label>
           <select
             id="filter"
             (change)="onChange()"
-            class="border-2 rounded-md border-black py-1 cursor-pointer"
+            class="rounded-lg py-1 cursor-pointer"
           >
             @for (option of options(); track options) {
             <option value="{{ option.value }}">
@@ -93,14 +96,11 @@
             }
           </select>
         </div>
-        <button
-          class="rounded-md bg-red-600 text-white px-6 py-2 shadow shadow-[rgba(0,0,0,0.3)]"
-          (click)="onClick()"
-        >
-          Take snapshot
-        </button>
+        <button hlmBtn (click)="onClick()">Take snapshot</button>
       </div>
-      <canvas class="block w-[640px] h-[480px] bg-gray-500"></canvas>
+      <canvas
+        class="block w-[640px] h-[480px] rounded-3xl bg-secondary"
+      ></canvas>
     </div>
   </div>
 </template>
