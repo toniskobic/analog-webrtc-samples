@@ -29,7 +29,7 @@
     class: "",
   });
 
-  onInit(async () => {
+  afterNextRender(async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -72,34 +72,35 @@
 
 <template>
   <div class="flex flex-col items-center py-3">
-    <div class="flex flex-col items-start gap-3">
-      <video
-        class="block w-[640px] h-[480px] rounded-3xl bg-secondary {{
-          selectedOption().class
-        }}"
-        autoplay
-        playsinline
-        [srcObject]="stream()"
-      ></video>
-      <div class="flex gap-5">
-        <div class="flex items-center gap-2">
-          <label for="filter">Filter:</label>
-          <select
-            id="filter"
-            (change)="onChange()"
-            class="rounded-lg py-1 cursor-pointer"
-          >
-            @for (option of options(); track options) {
-            <option value="{{ option.value }}">
-              {{ option.value | titlecase }}
-            </option>
-            }
-          </select>
+    <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
+      <div class="flex flex-col items-start gap-3">
+        <video
+          class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary
+          {{ selectedOption().class }}"
+          autoplay
+          playsinline
+          [srcObject]="stream()"
+        ></video>
+        <div class="flex gap-5">
+          <div class="flex items-center gap-2">
+            <label for="filter">Filter:</label>
+            <select
+              id="filter"
+              (change)="onChange()"
+              class="rounded-lg py-1 cursor-pointer"
+            >
+              @for (option of options(); track options) {
+              <option value="{{ option.value }}">
+                {{ option.value | titlecase }}
+              </option>
+              }
+            </select>
+          </div>
+          <button hlmBtn (click)="onClick()">Take snapshot</button>
         </div>
-        <button hlmBtn (click)="onClick()">Take snapshot</button>
       </div>
       <canvas
-        class="block w-[640px] h-[480px] rounded-3xl bg-secondary"
+        class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"
       ></canvas>
     </div>
   </div>

@@ -42,7 +42,7 @@
     <div class="flex flex-col items-start gap-3">
       <video
         #video
-        class="block w-[640px] h-[480px] bg-black rounded-3xl bg-secondary"
+        class="block w-[640px] max-w-full aspect-[64/48] bg-black rounded-3xl bg-secondary"
         autoplay
         playsinline
         [srcObject]="stream()"

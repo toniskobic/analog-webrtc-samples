@@ -53,12 +53,10 @@
 
 <template>
   <div class="flex flex-col items-center py-3">
-    <div class="flex flex-row flex-wrap justify-center gap-3 px-4">
+    <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
       <div class="flex flex-col items-start gap-3">
         <video
-          class="block w-[640px] max-h-[480px] max-w-full rounded-3xl bg-secondary {{
-            stream() ? '' : 'h-[480px]'
-          }}"
+          class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"
           autoplay
           playsinline
           [srcObject]="stream()"
@@ -66,7 +64,7 @@
         <button hlmBtn (click)="onClick()">Take snapshot</button>
       </div>
       <canvas
-        class="block w-[640px] max-h-[480px] max-w-full rounded-3xl bg-secondary"
+        class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"
       ></canvas>
     </div>
   </div>

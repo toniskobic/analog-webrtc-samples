@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { input } from "@angular/core";
+  import { input, computed } from "@angular/core";
   import {
     RouterOutlet,
     RouterLink,
@@ -7,6 +7,7 @@
     Routes,
   } from "@angular/router";
   import { NgClass } from "@angular/common";
+  import { Border } from "../models/border.model";
 
   defineMetadata({
     selector: "app-dashboard",
@@ -15,28 +16,28 @@
 
   const routes = input<Routes>();
 
-  const border: {
-    top?: boolean;
-    bottom?: boolean;
-    left?: boolean;
-    right?: boolean;
-  } = input({
+  const border: Border = input({
     top: true,
     bottom: true,
     left: false,
     right: false,
+  });
+
+  const borderClasses = computed(() => {
+    const borderInput = border();
+    return {
+      "border-t": borderInput.top,
+      "border-b": borderInput.bottom,
+      "border-r": borderInput.right,
+      "border-l": borderInput.left,
+    };
   });
 </script>
 
 <template>
   <ul
     class="flex flex-row justify-center border-border py-2"
-    [ngClass]="{
-      'border-t': border().top,
-      'border-b': border().bottom,
-      'border-r': border().right,
-      'border-l': border().left
-    }"
+    [ngClass]="borderClasses()"
   >
     @for (route of routes(); track route) {
     <li
