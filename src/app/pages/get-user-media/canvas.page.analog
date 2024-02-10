@@ -6,7 +6,7 @@
     afterNextRender,
   } from "@angular/core";
   import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
-  import { UtilsService } from "../../services/utils.service.ng";
+  import { UtilsService } from "../../services/utils.service.analog";
 
   defineMetadata({
     selector: "app-canvas-get-user-media",

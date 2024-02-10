@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => ({
     analog({
       vite: {
         experimental: {
-          dangerouslySupportNgFormat: true,
+          supportAnalogFormat: true,
         },
       },
     }),

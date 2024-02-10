@@ -5,7 +5,7 @@
     RouterLinkActive,
     Routes,
   } from "@angular/router";
-  import DashboardComponent from "../components/dashboard.component.ng";
+  import DashboardComponent from "../components/dashboard.component.analog";
 
   defineMetadata({
     selector: "app-get-user-media",

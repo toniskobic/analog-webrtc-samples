@@ -1,6 +1,6 @@
 <script lang="ts">
   import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
-  import DashboardComponent from "./components/dashboard.component.ng";
+  import DashboardComponent from "./components/dashboard.component.analog";
 
   defineMetadata({
     selector: "app-root",

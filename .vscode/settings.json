@@ -1,6 +1,6 @@
 {
   "files.associations": {
-    "*.ng": "html",
+    "*.analog": "html",
     "*.css": "tailwindcss"
   }
 }

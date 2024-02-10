@@ -6,7 +6,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { renderApplication } from '@angular/platform-server';
 
 import { config } from './app/app.config.server';
-import AppComponent from './app/app.component.ng';
+import AppComponent from './app/app.component.analog';
 
 if (import.meta.env.PROD) {
   enableProdMode();

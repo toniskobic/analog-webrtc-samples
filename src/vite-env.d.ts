@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-// Uncomment the lines below to enable types for experimental .ng format support
+// Uncomment the lines below to enable types for experimental .analog format support
 declare global {
   import type { Component } from '@angular/core';
 
@@ -33,7 +33,7 @@ declare global {
   }
 }
 
-declare module '*.ng' {
+declare module '*.analog' {
   const cmp = any;
   export default cmp;
 }
