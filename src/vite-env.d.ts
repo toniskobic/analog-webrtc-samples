@@ -1,6 +1,10 @@
 /// <reference types="vite/client" />
 
 // Uncomment the lines below to enable types for experimental .analog format support
+interface ImportAttributes {
+  analog: 'imports' | 'providers' | 'viewProviders' | 'exposes';
+}
+
 declare global {
   import type { Component } from '@angular/core';
 
@@ -13,23 +17,21 @@ declare global {
       metadata: Omit<
         Component,
         | 'template'
-        | 'templateUrl'
-        | 'host'
         | 'standalone'
         | 'changeDetection'
-        | 'styleUrls'
-        | 'styleUrl'
         | 'styles'
+        | 'outputs'
+        | 'inputs'
       > & { exposes?: unknown[] }
     ) => void;
     /**
      * Invoke the callback when the component is initialized.
      */
-    onInit: () => void;
+    onInit: (initFn: () => void) => void;
     /**
      * Invoke the callback when the component is destroyed.
      */
-    onDestroy: () => void;
+    onDestroy: (destroyFn: () => void) => void;
   }
 }
 

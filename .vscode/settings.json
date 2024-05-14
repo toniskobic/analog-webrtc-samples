@@ -1,6 +1,6 @@
 {
   "files.associations": {
-    "*.analog": "html",
+    "*.analog": "analog",
     "*.css": "tailwindcss"
   }
 }
