@@ -9,7 +9,7 @@
 
   defineMetadata({
     selector: "app-get-user-media",
-    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, DashboardComponent],
   });
 
   const routes: Routes = [

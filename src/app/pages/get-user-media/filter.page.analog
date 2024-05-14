@@ -7,6 +7,7 @@
   } from "@angular/core";
   import { TitleCasePipe } from "@angular/common";
   import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+  import { FilterValues } from "../../models/filter.model";
 
   defineMetadata({
     selector: "app-filter-get-user-media",
@@ -16,7 +17,7 @@
   const cdr = inject(ChangeDetectorRef);
 
   const stream = signal<MediaStream | undefined>(undefined);
-  const options = signal<{ value: string; class: string }[]>([
+  const options = signal<{ value: FilterValues; class: string }[]>([
     { value: "none", class: "" },
     { value: "blur", class: "blur-sm" },
     { value: "grayscale", class: "grayscale" },
@@ -24,7 +25,7 @@
     { value: "sepia", class: "sepia" },
   ]);
 
-  const selectedOption = signal<{ value: string; class: string }>({
+  const selectedOption = signal<{ value: FilterValues; class: string }>({
     value: "none",
     class: "",
   });
@@ -46,6 +47,7 @@
   function onClick() {
     const video = document.querySelector("video");
     const canvas = document.querySelector("canvas");
+    if (!canvas || !video) return;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas.className = `${selectedOption().class} rounded-3xl`;
@@ -55,10 +57,15 @@
   }
 
   function onChange() {
-    const selectValue = document.querySelector("select")?.value;
-    selectedOption.set(
-      options().find((option) => option.value === selectValue)
-    );
+    const selectEl = document.querySelector("select");
+    if (!selectEl) return;
+
+    const value = selectEl.value as FilterValues;
+    const selectedValue = options().find((option) => option.value === value)
+
+    if (!selectedValue) return;
+
+    selectedOption.set(selectedValue);
   }
 
   onDestroy(() => {

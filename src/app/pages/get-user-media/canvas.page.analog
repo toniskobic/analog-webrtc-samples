@@ -35,6 +35,7 @@
   function onClick() {
     const video = document.querySelector("video");
     const canvas = document.querySelector("canvas");
+    if (!canvas || !video) return;
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     canvas

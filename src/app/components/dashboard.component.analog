@@ -16,7 +16,7 @@
 
   const routes = input<Routes>();
 
-  const border: Border = input({
+  const border = input<Border>({
     top: true,
     bottom: true,
     left: false,
