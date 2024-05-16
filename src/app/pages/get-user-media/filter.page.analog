@@ -1,36 +1,39 @@
 <script lang="ts">
-  import {
-    signal,
-    ChangeDetectorRef,
-    inject,
-    afterNextRender,
-  } from "@angular/core";
-  import { TitleCasePipe } from "@angular/common";
-  import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
-  import { FilterValues } from "../../models/filter.model";
+import {
+  signal,
+  inject,
+  afterNextRender,
+} from "@angular/core";
+import { TitleCasePipe } from "@angular/common";
+import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+import { FilterValues } from "../../models/filter.model";
+import { CanvasService } from "../../services/canvas.service.analog";
+import { Subject } from "rxjs";
 
-  defineMetadata({
-    selector: "app-filter-get-user-media",
-    imports: [TitleCasePipe, HlmButtonDirective],
-  });
+defineMetadata({
+  selector: "app-filter-get-user-media",
+  imports: [TitleCasePipe, HlmButtonDirective],
+});
 
-  const cdr = inject(ChangeDetectorRef);
+// Temporary typing solution until Analog Language Server is fully implemented
+const canvasService: { drawImage(canvas: HTMLCanvasElement, video: HTMLVideoElement): void } = inject(CanvasService);
+const stream = signal<MediaStream | undefined>(undefined);
+const rendered$ = new Subject<void>();
 
-  const stream = signal<MediaStream | undefined>(undefined);
-  const options = signal<{ value: FilterValues; class: string }[]>([
-    { value: "none", class: "" },
-    { value: "blur", class: "blur-sm" },
-    { value: "grayscale", class: "grayscale" },
-    { value: "invert", class: "invert" },
-    { value: "sepia", class: "sepia" },
-  ]);
+const options = signal<{ value: FilterValues; class: string }[]>([
+  { value: "none", class: "" },
+  { value: "blur", class: "blur-sm" },
+  { value: "grayscale", class: "grayscale" },
+  { value: "invert", class: "invert" },
+  { value: "sepia", class: "sepia" },
+]);
+const selectedOption = signal<{ value: FilterValues; class: string }>({
+  value: "none",
+  class: "",
+});
 
-  const selectedOption = signal<{ value: FilterValues; class: string }>({
-    value: "none",
-    class: "",
-  });
-
-  afterNextRender(async () => {
+onInit(() => {
+  rendered$.subscribe(async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -38,77 +41,65 @@
       });
 
       stream.set(mediaStream);
-      cdr.detectChanges();
     } catch (error: any) {
       console.log(error.message, error.name);
     }
   });
+});
 
-  function onClick() {
-    const video = document.querySelector("video");
-    const canvas = document.querySelector("canvas");
-    if (!canvas || !video) return;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.className = `${selectedOption().class} rounded-3xl`;
-    canvas
-      .getContext("2d")
-      ?.drawImage(video, 0, 0, canvas.width, canvas.height);
-  }
+afterNextRender(async () => {
+  rendered$.next();
+});
 
-  function onChange() {
-    const selectEl = document.querySelector("select");
-    if (!selectEl) return;
+function onClick() {
+  const video = document.querySelector("video");
+  const canvas = document.querySelector("canvas");
+  if (!canvas || !video) return;
+  canvas.className = `${selectedOption().class} rounded-3xl`;
+  canvasService.drawImage(canvas, video);
+}
 
-    const value = selectEl.value as FilterValues;
-    const selectedValue = options().find((option) => option.value === value)
+function onChange() {
+  const selectEl = document.querySelector("select");
+  if (!selectEl) return;
 
-    if (!selectedValue) return;
+  const value = selectEl.value as FilterValues;
+  const selectedValue = options().find((option) => option.value === value)
 
-    selectedOption.set(selectedValue);
-  }
+  if (!selectedValue) return;
 
-  onDestroy(() => {
-    stream()
-      ?.getTracks()
-      .forEach((track) => {
-        track.stop();
-      });
+  selectedOption.set(selectedValue);
+}
+
+onDestroy(() => {
+  stream()?.getTracks().forEach((track) => {
+    track.stop();
   });
+  rendered$.unsubscribe();
+});
 </script>
 
 <template>
-  <div class="flex flex-col items-center py-3">
-    <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
-      <div class="flex flex-col items-start gap-3">
-        <video
-          class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary
-          {{ selectedOption().class }}"
-          autoplay
-          playsinline
-          [srcObject]="stream()"
-        ></video>
-        <div class="flex gap-5">
-          <div class="flex items-center gap-2">
-            <label for="filter">Filter:</label>
-            <select
-              id="filter"
-              (change)="onChange()"
-              class="rounded-lg py-1 cursor-pointer"
-            >
-              @for (option of options(); track options) {
-              <option value="{{ option.value }}">
-                {{ option.value | titlecase }}
-              </option>
-              }
-            </select>
-          </div>
-          <button hlmBtn (click)="onClick()">Take snapshot</button>
+<div class="flex flex-col items-center py-3">
+  <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
+    <div class="flex flex-col items-start gap-3">
+      <video class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary
+          {{ selectedOption().class }}" autoplay playsinline [srcObject]="stream()"></video>
+      <div class="flex gap-5">
+        <div class="flex items-center gap-2">
+          <label for="filter">Filter:</label>
+          <select id="filter" (change)="onChange()" class="rounded-lg py-1 cursor-pointer">
+            @for (option of options(); track options) {
+            <option value="{{ option.value }}">
+              {{ option.value | titlecase }}
+            </option>
+            }
+          </select>
         </div>
+        <button hlmBtn (click)="onClick()">Take snapshot</button>
       </div>
-      <canvas
-        class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"
-      ></canvas>
+    </div>
+    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>
     </div>
   </div>
 </template>

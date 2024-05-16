@@ -9,7 +9,7 @@ import viteTsConfigPaths from 'vite-tsconfig-paths';
 export default defineConfig(({ mode }) => ({
   publicDir: 'src/assets',
   build: {
-    target: ['es2020'],
+    target: ['es2022'],
   },
   resolve: {
     mainFields: ['module'],

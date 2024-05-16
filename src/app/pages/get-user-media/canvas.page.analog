@@ -1,24 +1,24 @@
 <script lang="ts">
-  import {
-    signal,
-    ChangeDetectorRef,
-    inject,
-    afterNextRender,
-  } from "@angular/core";
-  import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
-  import { UtilsService } from "../../services/utils.service.analog";
+import {
+  signal,
+  inject,
+  afterNextRender,
+} from "@angular/core";
+import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+import { CanvasService } from "../../services/canvas.service.analog";
+import { Subject } from "rxjs";
 
-  defineMetadata({
-    selector: "app-canvas-get-user-media",
-    imports: [HlmButtonDirective],
-  });
+defineMetadata({
+  selector: "app-canvas-get-user-media",
+  imports: [HlmButtonDirective],
+});
 
-  const cdr = inject(ChangeDetectorRef);
-  const utils = inject(UtilsService);
+const canvasService: { drawImage(canvas: HTMLCanvasElement, video: HTMLVideoElement): void } = inject(CanvasService);
+const stream = signal<MediaStream | undefined>(undefined);
+const rendered$ = new Subject<void>();
 
-  const stream = signal<MediaStream | undefined>(undefined);
-
-  afterNextRender(async () => {
+onInit(() => {
+  rendered$.subscribe(async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -26,47 +26,40 @@
       });
 
       stream.set(mediaStream);
-      cdr.detectChanges();
     } catch (error: any) {
       console.log(error.message, error.name);
     }
   });
+});
 
-  function onClick() {
-    const video = document.querySelector("video");
-    const canvas = document.querySelector("canvas");
-    if (!canvas || !video) return;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas
-      .getContext("2d")
-      ?.drawImage(video, 0, 0, canvas.width, canvas.height);
-  }
+afterNextRender(async () => {
+  rendered$.next();
+});
 
-  onDestroy(() => {
-    stream()
-      ?.getTracks()
-      .forEach((track) => {
-        track.stop();
-      });
+function onClick() {
+  const video = document.querySelector("video");
+  const canvas = document.querySelector("canvas");
+  if (!canvas || !video) return;
+  canvasService.drawImage(canvas, video);
+}
+
+onDestroy(() => {
+  stream()?.getTracks().forEach((track) => {
+    track.stop();
   });
+  rendered$.unsubscribe();
+});
 </script>
 
 <template>
-  <div class="flex flex-col items-center py-3">
-    <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
-      <div class="flex flex-col items-start gap-3">
-        <video
-          class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"
-          autoplay
-          playsinline
-          [srcObject]="stream()"
-        ></video>
-        <button hlmBtn (click)="onClick()">Take snapshot</button>
-      </div>
-      <canvas
-        class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"
-      ></canvas>
+<div class="flex flex-col items-center py-3">
+  <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
+    <div class="flex flex-col items-start gap-3">
+      <video class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary" autoplay playsinline
+        [srcObject]="stream()"></video>
+      <button hlmBtn (click)="onClick()">Take snapshot</button>
+    </div>
+    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>
     </div>
   </div>
 </template>

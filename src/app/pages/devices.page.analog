@@ -4,7 +4,7 @@
 
   defineMetadata({
     selector: "app-devices",
-    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, DashboardComponent],
   });
 
   const routes: Routes = [{path: 'input-output', title: 'Input-output'}];

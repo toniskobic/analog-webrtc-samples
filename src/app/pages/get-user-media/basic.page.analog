@@ -1,17 +1,18 @@
 <script lang="ts">
-  import { signal, ChangeDetectorRef, inject } from "@angular/core";
-  import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+import { signal } from "@angular/core";
+import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+import { Subject } from 'rxjs';
 
-  defineMetadata({
-    selector: "app-basic-get-user-media",
-    imports: [HlmButtonDirective],
-  });
+defineMetadata({
+  selector: "app-basic-get-user-media",
+  imports: [HlmButtonDirective],
+});
 
-  const cdr = inject(ChangeDetectorRef);
+const stream = signal<MediaStream | undefined>(undefined);
+const cameraOpen$ = new Subject<void>();
 
-  const stream = signal<MediaStream | undefined>(undefined);
-
-  async function onClick() {
+onInit(() => {
+  cameraOpen$.subscribe(async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -22,31 +23,30 @@
       console.log(videoTracks);
 
       stream.set(mediaStream);
-      cdr.detectChanges();
     } catch (error) {
       console.log(error);
     }
-  }
-
-  onDestroy(() => {
-    stream()
-      ?.getTracks()
-      .forEach((track) => {
-        track.stop();
-      });
   });
+});
+
+function onClick() {
+  cameraOpen$.next();
+}
+
+onDestroy(() => {
+  stream()?.getTracks().forEach((track) => {
+    track.stop();
+  });
+  cameraOpen$.unsubscribe();
+});
 </script>
 
 <template>
-  <div class="flex flex-col items-center py-3">
-    <div class="flex flex-col items-start gap-3">
-      <video
-        class="block w-[640px] max-w-full aspect-[64/48] bg-black rounded-3xl bg-secondary"
-        autoplay
-        playsinline
-        [srcObject]="stream()"
-      ></video>
-      <button hlmBtn (click)="onClick()">Open camera</button>
+<div class="flex flex-col items-center py-3">
+  <div class="flex flex-col items-start gap-3">
+    <video class="block w-[640px] max-w-full aspect-[64/48] bg-black rounded-3xl bg-secondary" autoplay playsinline
+      [srcObject]="stream()"></video>
+    <button hlmBtn (click)="onClick()">Open camera</button>
     </div>
   </div>
 </template>
