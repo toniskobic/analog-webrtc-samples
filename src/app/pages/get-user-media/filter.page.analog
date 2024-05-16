@@ -4,8 +4,13 @@ import {
   inject,
   afterNextRender,
 } from "@angular/core";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { TitleCasePipe } from "@angular/common";
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+import { BrnSelectImports } from '@spartan-ng/ui-select-brain';
+import { HlmSelectImports } from '@spartan-ng/ui-select-helm';
+import { HlmLabelDirective } from '@spartan-ng/ui-label-helm';
+
 import { FilterValues } from "../../models/filter.model";
 import { CanvasService } from "../../services/canvas.service.analog";
 import { MediaStreamService } from "../../services/media-stream.service.analog";
@@ -13,7 +18,7 @@ import { Subject } from "rxjs";
 
 defineMetadata({
   selector: "app-filter-get-user-media",
-  imports: [TitleCasePipe, HlmButtonDirective],
+  imports: [TitleCasePipe, HlmButtonDirective, BrnSelectImports, HlmSelectImports, ReactiveFormsModule, HlmLabelDirective],
 });
 
 // TODO Remove temporary typing solution when Analog Language Server is fully implemented
@@ -29,15 +34,15 @@ const options = signal<{ value: FilterValues; class: string }[]>([
   { value: "invert", class: "invert" },
   { value: "sepia", class: "sepia" },
 ]);
-const selectedOption = signal<{ value: FilterValues; class: string }>({
+const selectedOption = new FormControl<{ value: FilterValues; class: string }>({
   value: "none",
   class: "",
-});
+}, { nonNullable: true });
 
 onInit(() => {
   rendered$.subscribe(async () => {
-      const mediaStream = await mediaStreamService.getUserMedia({video: true, audio: false});
-      stream.set(mediaStream);
+    const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
+    stream.set(mediaStream);
   });
 });
 
@@ -49,7 +54,7 @@ function onClick() {
   const video = document.querySelector("video");
   const canvas = document.querySelector("canvas");
   if (!canvas || !video) return;
-  canvas.className = `${selectedOption().class} rounded-3xl`;
+  canvas.className = `${selectedOption.value.class} rounded-3xl`;
   canvasService.drawImage(canvas, video);
 }
 
@@ -78,22 +83,25 @@ onDestroy(() => {
   <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
     <div class="flex flex-col items-start gap-3">
       <video class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary
-          {{ selectedOption().class }}" autoplay playsinline [srcObject]="stream()"></video>
+          {{ selectedOption.value.class }}" autoplay playsinline [srcObject]="stream()"></video>
       <div class="flex gap-5">
-        <div class="flex items-center gap-2">
-          <label for="filter">Filter:</label>
-          <select id="filter" (change)="onChange()" class="rounded-lg py-1 cursor-pointer">
-            @for (option of options(); track options) {
-            <option value="{{ option.value }}">
-              {{ option.value | titlecase }}
-            </option>
-            }
-          </select>
-        </div>
+        <label hlmLabel>Filter:
+          <brn-select class="inline-block" placeholder="Select some fruit" [formControl]="selectedOption">
+            <hlm-select-trigger>
+              <hlm-select-value />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              @for (option of options(); track options) {
+              <hlm-option [value]="option">
+                {{ option.value | titlecase }}
+              </hlm-option>
+              }
+            </hlm-select-content>
+          </brn-select>
+        </label>
         <button hlmBtn (click)="onClick()">Take snapshot</button>
       </div>
     </div>
-    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>
-    </div>
+    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>  </div>
   </div>
 </template>

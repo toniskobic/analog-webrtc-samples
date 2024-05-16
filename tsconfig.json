@@ -17,7 +17,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
-    "lib": ["ES2022", "dom"],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
     "useDefineForClassFields": false,
     "skipLibCheck": true,
     "paths": {
@@ -80,6 +83,9 @@
       ],
       "@spartan-ng/ui-scrollarea-helm": [
         "./src/libs/ui/ui-scrollarea-helm/src/index.ts"
+      ],
+      "@spartan-ng/ui-select-helm": [
+        "./src/libs/ui/ui-select-helm/src/index.ts"
       ],
       "@spartan-ng/ui-separator-helm": [
         "./src/libs/ui/ui-separator-helm/src/index.ts"
