@@ -6,6 +6,7 @@ import {
 } from "@angular/core";
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
 import { CanvasService } from "../../services/canvas.service.analog";
+import { MediaStreamService } from "../../services/media-stream.service.analog";
 import { Subject } from "rxjs";
 
 defineMetadata({
@@ -13,22 +14,16 @@ defineMetadata({
   imports: [HlmButtonDirective],
 });
 
+// TODO Remove temporary typing solution when Analog Language Server improves
+const mediaStreamService: { getUserMedia(constraints?: MediaStreamConstraints): Promise<MediaStream | undefined> } = inject(MediaStreamService);
 const canvasService: { drawImage(canvas: HTMLCanvasElement, video: HTMLVideoElement): void } = inject(CanvasService);
 const stream = signal<MediaStream | undefined>(undefined);
 const rendered$ = new Subject<void>();
 
 onInit(() => {
   rendered$.subscribe(async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
-
-      stream.set(mediaStream);
-    } catch (error: any) {
-      console.log(error.message, error.name);
-    }
+    const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
+    stream.set(mediaStream);
   });
 });
 
@@ -59,7 +54,6 @@ onDestroy(() => {
         [srcObject]="stream()"></video>
       <button hlmBtn (click)="onClick()">Take snapshot</button>
     </div>
-    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>
-    </div>
+    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas></div>
   </div>
 </template>

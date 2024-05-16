@@ -8,6 +8,7 @@ import { TitleCasePipe } from "@angular/common";
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
 import { FilterValues } from "../../models/filter.model";
 import { CanvasService } from "../../services/canvas.service.analog";
+import { MediaStreamService } from "../../services/media-stream.service.analog";
 import { Subject } from "rxjs";
 
 defineMetadata({
@@ -15,8 +16,9 @@ defineMetadata({
   imports: [TitleCasePipe, HlmButtonDirective],
 });
 
-// Temporary typing solution until Analog Language Server is fully implemented
+// TODO Remove temporary typing solution when Analog Language Server is fully implemented
 const canvasService: { drawImage(canvas: HTMLCanvasElement, video: HTMLVideoElement): void } = inject(CanvasService);
+const mediaStreamService: { getUserMedia(constraints?: MediaStreamConstraints): Promise<MediaStream | undefined> } = inject(MediaStreamService);
 const stream = signal<MediaStream | undefined>(undefined);
 const rendered$ = new Subject<void>();
 
@@ -34,16 +36,8 @@ const selectedOption = signal<{ value: FilterValues; class: string }>({
 
 onInit(() => {
   rendered$.subscribe(async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
-
+      const mediaStream = await mediaStreamService.getUserMedia({video: true, audio: false});
       stream.set(mediaStream);
-    } catch (error: any) {
-      console.log(error.message, error.name);
-    }
   });
 });
 
