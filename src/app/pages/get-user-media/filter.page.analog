@@ -86,7 +86,7 @@ onDestroy(() => {
           {{ selectedOption.value.class }}" autoplay playsinline [srcObject]="stream()"></video>
       <div class="flex gap-5">
         <label hlmLabel>Filter:
-          <brn-select class="inline-block" placeholder="Select some fruit" [formControl]="selectedOption">
+          <brn-select class="inline-block" placeholder="Select camera filter" [formControl]="selectedOption">
             <hlm-select-trigger>
               <hlm-select-value />
             </hlm-select-trigger>
