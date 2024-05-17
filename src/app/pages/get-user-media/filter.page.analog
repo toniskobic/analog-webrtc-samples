@@ -3,6 +3,8 @@ import {
   signal,
   inject,
   afterNextRender,
+  viewChild,
+  ElementRef
 } from "@angular/core";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { TitleCasePipe } from "@angular/common";
@@ -39,6 +41,9 @@ const selectedOption = new FormControl<{ value: FilterValues; class: string }>({
   class: "",
 }, { nonNullable: true });
 
+const video = viewChild<ElementRef<HTMLVideoElement>>('video');
+const canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
+
 onInit(() => {
   rendered$.subscribe(async () => {
     const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
@@ -51,23 +56,11 @@ afterNextRender(async () => {
 });
 
 function onClick() {
-  const video = document.querySelector("video");
-  const canvas = document.querySelector("canvas");
-  if (!canvas || !video) return;
-  canvas.className = `${selectedOption.value.class} rounded-3xl`;
-  canvasService.drawImage(canvas, video);
-}
-
-function onChange() {
-  const selectEl = document.querySelector("select");
-  if (!selectEl) return;
-
-  const value = selectEl.value as FilterValues;
-  const selectedValue = options().find((option) => option.value === value)
-
-  if (!selectedValue) return;
-
-  selectedOption.set(selectedValue);
+  const canvasEl = canvas()?.nativeElement;
+  const videoEl = video()?.nativeElement;
+  if (!canvasEl || !videoEl) return;
+  canvasEl.className = `${selectedOption.value.class} rounded-3xl`;
+  canvasService.drawImage(canvasEl, videoEl);
 }
 
 onDestroy(() => {
@@ -82,7 +75,7 @@ onDestroy(() => {
 <div class="flex flex-col items-center py-3">
   <div class="flex flex-row flex-wrap justify-center items-start gap-3 px-4">
     <div class="flex flex-col items-start gap-3">
-      <video class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary
+      <video #video class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary
           {{ selectedOption.value.class }}" autoplay playsinline [srcObject]="stream()"></video>
       <div class="flex gap-5">
         <label hlmLabel>Filter:
@@ -102,6 +95,7 @@ onDestroy(() => {
         <button hlmBtn (click)="onClick()">Take snapshot</button>
       </div>
     </div>
-    <canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>  </div>
+    <canvas #canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>
+    </div>
   </div>
 </template>
