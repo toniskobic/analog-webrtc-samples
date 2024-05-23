@@ -1,4 +1,3 @@
-<script lang="ts">
 import { createInjectable } from "ngxtension/create-injectable";
 
 export const MediaStreamService = createInjectable(
@@ -15,4 +14,3 @@ export const MediaStreamService = createInjectable(
   },
   { providedIn: "root" }
 );
-</script>

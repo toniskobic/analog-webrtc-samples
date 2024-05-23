@@ -1,4 +1,3 @@
-<script lang="ts">
 import { createInjectable } from "ngxtension/create-injectable";
 
 export const CanvasService = createInjectable(
@@ -13,4 +12,3 @@ export const CanvasService = createInjectable(
   },
   { providedIn: "root" }
 );
-</script>

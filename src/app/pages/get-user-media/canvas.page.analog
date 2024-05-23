@@ -7,8 +7,8 @@ import {
   ElementRef
 } from "@angular/core";
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
-import { CanvasService } from "../../services/canvas.service.analog";
-import { MediaStreamService } from "../../services/media-stream.service.analog";
+import { CanvasService } from "../../services/canvas.service";
+import { MediaStreamService } from "../../services/media-stream.service";
 import { Subject } from "rxjs";
 
 defineMetadata({
@@ -16,9 +16,8 @@ defineMetadata({
   imports: [HlmButtonDirective],
 });
 
-// TODO Remove temporary typing solution when Analog Language Server improves
-const mediaStreamService: { getUserMedia(constraints?: MediaStreamConstraints): Promise<MediaStream | undefined> } = inject(MediaStreamService);
-const canvasService: { drawImage(canvas: HTMLCanvasElement, video: HTMLVideoElement): void } = inject(CanvasService);
+const mediaStreamService = inject(MediaStreamService);
+const canvasService = inject(CanvasService);
 const stream = signal<MediaStream | undefined>(undefined);
 const rendered$ = new Subject<void>();
 

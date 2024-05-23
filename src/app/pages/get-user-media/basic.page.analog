@@ -1,7 +1,7 @@
 <script lang="ts">
 import { signal, inject } from "@angular/core";
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
-import { MediaStreamService } from "../../services/media-stream.service.analog";
+import { MediaStreamService } from "../../services/media-stream.service";
 import { Subject } from 'rxjs';
 
 defineMetadata({
@@ -9,8 +9,7 @@ defineMetadata({
   imports: [HlmButtonDirective],
 });
 
-// TODO Remove temporary typing solution when Analog Language Server improves
-const mediaStreamService: { getUserMedia(constraints?: MediaStreamConstraints): Promise<MediaStream | undefined> } = inject(MediaStreamService);
+const mediaStreamService = inject(MediaStreamService);
 const stream = signal<MediaStream | undefined>(undefined);
 const cameraOpen$ = new Subject<void>();
 

@@ -14,8 +14,8 @@ import { HlmSelectImports } from '@spartan-ng/ui-select-helm';
 import { HlmLabelDirective } from '@spartan-ng/ui-label-helm';
 
 import { FilterValues } from "../../models/filter.model";
-import { CanvasService } from "../../services/canvas.service.analog";
-import { MediaStreamService } from "../../services/media-stream.service.analog";
+import { CanvasService } from "../../services/canvas.service";
+import { MediaStreamService } from "../../services/media-stream.service";
 import { Subject } from "rxjs";
 
 defineMetadata({
@@ -23,9 +23,8 @@ defineMetadata({
   imports: [TitleCasePipe, HlmButtonDirective, BrnSelectImports, HlmSelectImports, ReactiveFormsModule, HlmLabelDirective],
 });
 
-// TODO Remove temporary typing solution when Analog Language Server is fully implemented
-const canvasService: { drawImage(canvas: HTMLCanvasElement, video: HTMLVideoElement): void } = inject(CanvasService);
-const mediaStreamService: { getUserMedia(constraints?: MediaStreamConstraints): Promise<MediaStream | undefined> } = inject(MediaStreamService);
+const canvasService = inject(CanvasService);
+const mediaStreamService = inject(MediaStreamService);
 const stream = signal<MediaStream | undefined>(undefined);
 const rendered$ = new Subject<void>();
 
