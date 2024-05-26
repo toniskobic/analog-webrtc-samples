@@ -9,7 +9,6 @@ import {
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
 import { CanvasService } from "../../services/canvas.service";
 import { MediaStreamService } from "../../services/media-stream.service";
-import { Subject } from "rxjs";
 
 defineMetadata({
   selector: "app-canvas-get-user-media",
@@ -19,23 +18,16 @@ defineMetadata({
 const mediaStreamService = inject(MediaStreamService);
 const canvasService = inject(CanvasService);
 const stream = signal<MediaStream | undefined>(undefined);
-const rendered$ = new Subject<void>();
 
 const video = viewChild<ElementRef<HTMLVideoElement>>('video');
 const canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
 
-onInit(() => {
-  rendered$.subscribe(async () => {
-    const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
-    stream.set(mediaStream);
-  });
-});
-
 afterNextRender(async () => {
-  rendered$.next();
+  const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
+  stream.set(mediaStream);
 });
 
-function onClick() {
+function takeSnapshot() {
   const videoEl = video()?.nativeElement;
   const canvasEl = canvas()?.nativeElement;
   if (!canvasEl || !videoEl) return;
@@ -46,7 +38,6 @@ onDestroy(() => {
   stream()?.getTracks().forEach((track) => {
     track.stop();
   });
-  rendered$.unsubscribe();
 });
 </script>
 
@@ -56,8 +47,9 @@ onDestroy(() => {
     <div class="flex flex-col items-start gap-3">
       <video #video class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary" autoplay playsinline
         [srcObject]="stream()"></video>
-      <button hlmBtn (click)="onClick()">Take snapshot</button>
+      <button hlmBtn (click)="takeSnapshot()">Take snapshot</button>
     </div>
-    <canvas #canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas></div>
+    <canvas #canvas class="block w-[640px] max-w-full aspect-[64/48] rounded-3xl bg-secondary"></canvas>
+    </div>
   </div>
 </template>

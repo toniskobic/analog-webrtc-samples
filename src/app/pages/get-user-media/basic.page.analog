@@ -2,7 +2,6 @@
 import { signal, inject } from "@angular/core";
 import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
 import { MediaStreamService } from "../../services/media-stream.service";
-import { Subject } from 'rxjs';
 
 defineMetadata({
   selector: "app-basic-get-user-media",
@@ -11,26 +10,18 @@ defineMetadata({
 
 const mediaStreamService = inject(MediaStreamService);
 const stream = signal<MediaStream | undefined>(undefined);
-const cameraOpen$ = new Subject<void>();
 
-onInit(() => {
-  cameraOpen$.subscribe(async () => {
-      const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
-      const videoTracks = mediaStream?.getVideoTracks();
-      console.log(videoTracks);
-      stream.set(mediaStream);
-  });
-});
-
-function onClick() {
-  cameraOpen$.next();
+async function openCamera() {
+  const mediaStream = await mediaStreamService.getUserMedia({ video: true, audio: false });
+  const videoTracks = mediaStream?.getVideoTracks();
+  console.log(videoTracks);
+  stream.set(mediaStream);
 }
 
 onDestroy(() => {
   stream()?.getTracks().forEach((track) => {
     track.stop();
   });
-  cameraOpen$.unsubscribe();
 });
 </script>
 
@@ -39,7 +30,7 @@ onDestroy(() => {
   <div class="flex flex-col items-start gap-3">
     <video class="block w-[640px] max-w-full aspect-[64/48] bg-black rounded-3xl bg-secondary" autoplay playsinline
       [srcObject]="stream()"></video>
-    <button hlmBtn (click)="onClick()">Open camera</button>
+    <button hlmBtn (click)="openCamera()">Open camera</button>
     </div>
   </div>
 </template>
