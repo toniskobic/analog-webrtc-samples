@@ -1,9 +1,35 @@
 <script lang="ts">
-  defineMetadata({
-    selector: "app-resolution-get-user-media",
-  });
+import {
+  inject,
+  signal
+} from "@angular/core";
+import { HlmButtonDirective } from "@spartan-ng/ui-button-helm";
+import { MediaStreamService } from "../../services/media-stream.service";
+import { RESOLUTION_CONSTRAINTS } from '../../constants';
+
+defineMetadata({
+  selector: "app-resolution-get-user-media",
+  imports: [HlmButtonDirective]
+});
+
+const resConstraints = RESOLUTION_CONSTRAINTS;
+const mediaStreamService = inject(MediaStreamService);
+const stream = signal<MediaStream | undefined>(undefined);
+
+async function openCamera(resType: string) {
+  const constraints = resConstraints.find(x => x.name == resType)?.constraints;
+  const mediaStream = await mediaStreamService.getUserMedia(constraints);
+  stream.set(mediaStream);
+}
+
 </script>
 
 <template>
-  <div>resolution works!</div>
+<div class="flex flex-col items-center py-3">
+  <div class="flex flex-col items-start gap-3">
+    <video class="block w-[640px] max-w-full aspect-[64/48] bg-black rounded-3xl bg-secondary" autoplay playsinline
+      [srcObject]="stream()"></video>
+    <button hlmBtn (click)="openCamera('hd')">Open camera</button>
+    </div>
+  </div>
 </template>
