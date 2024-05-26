@@ -16,6 +16,8 @@ const resConstraints = RESOLUTION_CONSTRAINTS;
 const mediaStreamService = inject(MediaStreamService);
 const stream = signal<MediaStream | undefined>(undefined);
 
+const width = signal<number>(1080);
+
 async function openCamera(resType: string) {
   const constraints = resConstraints.find(x => x.name == resType)?.constraints;
   const mediaStream = await mediaStreamService.getUserMedia(constraints);
@@ -27,9 +29,17 @@ async function openCamera(resType: string) {
 <template>
 <div class="flex flex-col items-center py-3">
   <div class="flex flex-col items-start gap-3">
+    <div class="flex flex-row items-center gap-2">
+      <button hlmBtn (click)="openCamera('hd')">HD</button>
+    </div>
     <video class="block w-[640px] max-w-full aspect-[64/48] bg-black rounded-3xl bg-secondary" autoplay playsinline
       [srcObject]="stream()"></video>
-    <button hlmBtn (click)="openCamera('hd')">Open camera</button>
+    <div class="flex flex-col gap-2 py-3">
+      <div class="flex flex-row gap-2 items-center">
+        <span>Width: {{ width() }} px</span>
+        <input type="range" min="0" max="7680">
+      </div>
     </div>
   </div>
+</div>
 </template>
