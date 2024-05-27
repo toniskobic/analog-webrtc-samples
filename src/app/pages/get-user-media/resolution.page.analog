@@ -24,6 +24,11 @@ async function openCamera(resType: string) {
   stream.set(mediaStream);
 }
 
+onDestroy(() => {
+  stream()?.getTracks().forEach((track) => {
+    track.stop();
+  });
+});
 </script>
 
 <template>
