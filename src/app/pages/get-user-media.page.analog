@@ -5,11 +5,11 @@
     RouterLinkActive,
     Routes,
   } from "@angular/router";
-  import DashboardComponent from "../components/dashboard.component.analog";
+  import DashboardComponent from "../components/dashboard.component.analog" with { analog: 'imports' };
 
   defineMetadata({
     selector: "app-get-user-media",
-    imports: [RouterOutlet, RouterLink, RouterLinkActive, DashboardComponent],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive],
   });
 
   const routes: Routes = [
